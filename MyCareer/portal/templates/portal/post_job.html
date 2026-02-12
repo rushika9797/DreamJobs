@@ -1,0 +1,41 @@
+{% extends "portal/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="form-wrapper">
+
+    <div class="job-card">
+        <h2>Post a Job</h2>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>Title</label>
+                {{ form.title }}
+            </div>
+
+            <div class="form-group">
+                <label>Company</label>
+                {{ form.company }}
+            </div>
+
+            <div class="form-group">
+                <label>Location</label>
+                {{ form.location }}
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                {{ form.description }}
+            </div>
+
+            <button type="submit" class="btn-primary">Post Job</button>
+
+        </form>
+    </div>
+
+</div>
+
+{% endblock %}

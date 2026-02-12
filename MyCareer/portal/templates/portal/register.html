@@ -1,0 +1,32 @@
+{% extends "portal/base.html" %}
+
+{% block content %}
+
+<div class="auth-container">
+    <div class="auth-box">
+
+        <h2>Create Account</h2>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {% for field in form %}
+                <div class="form-group">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="auth-btn">Register</button>
+
+            <p class="auth-link">
+                Already have account?
+                <a href="{% url 'login' %}">Login</a>
+            </p>
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "portal/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+<section class="hero">
+    <div class="hero-content">
+        <h1>Find Your Dream Job</h1>
+        <p>Search thousands of job opportunities.</p>
+
+        <form class="search-box">
+            <input type="text" placeholder="Job Title or Keywords">
+            <input type="text" placeholder="Location">
+            <button>Search</button>
+        </form>
+    </div>
+</section>
+
+
+<!-- FEATURE CARDS -->
+<section class="features">
+    <div class="card">Browse Jobs</div>
+    <div class="card">Career Advice</div>
+    <div class="card">Online Courses</div>
+</section>
+
+
+<!-- JOB LIST -->
+<section class="jobs">
+    <h2>Featured Jobs</h2>
+
+    <div class="job-grid">
+        {% for job in jobs %}
+        <div class="job-card">
+            <h3>{{ job.title }}</h3>
+            <p class="company">{{ job.company }}</p>
+            <p class="location">{{ job.location }}</p>
+
+            <a href="{% url 'job_detail' job.id %}" class="btn">
+                View Job
+            </a>
+        </div>
+        {% empty %}
+        <p>No jobs posted yet</p>
+        {% endfor %}
+    </div>
+</section>
+
+
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "portal/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="apply-wrapper">
+    <div class="apply-card">
+
+        <h2>Apply for {{ job.title }}</h2>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>Upload Resume</label>
+                {{ form.resume }}
+            </div>
+
+            <button type="submit" class="btn-primary">
+                Apply Now
+            </button>
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}

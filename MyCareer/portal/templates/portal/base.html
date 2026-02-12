@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MyCareer Job Portal</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<nav class="navbar">
+    <h2 class="logo">DreamJobs</h2>
+
+    <div>
+        <a href="/">Jobs</a>
+        <a href="/dashboard/">Dashboard</a>
+
+        {% if user.is_authenticated %}
+            <a href="/logout/">Logout</a>
+        {% else %}
+            <a href="/login/">Login</a>
+        {% endif %}
+    </div>
+</nav>
+
+{% block content %}{% endblock %}
+
+</body>
+</html>

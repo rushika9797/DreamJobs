@@ -1,0 +1,30 @@
+{% extends "portal/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="job-detail-wrapper">
+
+    <div class="job-detail-card">
+
+        <h1 class="job-title">{{ job.title }}</h1>
+
+        <p class="job-meta">
+            {{ job.company }} • {{ job.location }}
+        </p>
+
+        <hr>
+
+        <div class="job-description">
+            {{ job.description|linebreaks }}
+        </div>
+
+        <a href="{% url 'apply_job' job.id %}" class="apply-btn">
+            Apply Now
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

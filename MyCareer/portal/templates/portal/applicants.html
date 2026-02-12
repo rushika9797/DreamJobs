@@ -1,0 +1,45 @@
+{% extends "portal/base.html" %}
+{% block content %}
+
+<div class="dashboard-wrapper">
+    <div class="dashboard-card">
+
+        <h2>Applicants List</h2>
+
+        <table class="app-table">
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Resume</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+
+            {% for app in applications %}
+            <tr>
+                <td>{{ app.applicant.username }}</td>
+                <td>{{ app.applicant.email }}</td>
+
+                <td>
+                    <a href="{{ app.resume.url }}" target="_blank">Download</a>
+                </td>
+
+                <td>{{ app.status }}</td>
+
+                <td>
+                    {% if app.status == "pending" %}
+                        <a href="{% url 'approve_application' app.id %}" class="btn-approve">Approve</a>
+                        <a href="{% url 'reject_application' app.id %}" class="btn-reject">Reject</a>
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}
