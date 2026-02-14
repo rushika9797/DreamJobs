@@ -7,7 +7,7 @@ class UserRegisterForm(UserCreationForm):
 
     ROLE_CHOICES = (
         ("employer", "Employer"),
-        ("jobseeker", "Job Seeker"),
+        ("seeker", "Job Seeker"),
     )
 
     email = forms.EmailField()
@@ -27,8 +27,8 @@ class JobForm(forms.ModelForm):
         model = Job
         fields = ['title','company','location','description']
 
-
 class ApplicationForm(forms.ModelForm):
     class Meta:
         model = Application
-        fields = ['resume']
+        fields = ['resume']   # 🔥 ONLY resume
+

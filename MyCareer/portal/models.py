@@ -24,16 +24,6 @@ class Job(models.Model):
     def __str__(self):
         return self.title
 
-
-class Application(models.Model):
-    job = models.ForeignKey(Job, on_delete=models.CASCADE)
-    applicant = models.ForeignKey(User, on_delete=models.CASCADE)
-    resume = models.FileField(upload_to='resumes/')
-    applied_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.applicant.username} -> {self.job.title}"
-
 class Application(models.Model):
     STATUS_CHOICES = (
         ("pending", "Pending"),

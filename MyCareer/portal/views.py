@@ -10,7 +10,12 @@ from django.contrib.auth import login
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
+from .models import Job, Application
 
+def home(request):
+    jobs = Job.objects.all().order_by('-created_at')
+    return render(request, 'portal/home.html', {'jobs': jobs})
+    
 def register(request):
 
     if request.method == "POST":
@@ -31,8 +36,6 @@ def register(request):
 
     return render(request, "portal/register.html", {"form": form})
 
-
-
 def login_user(request):
     if request.method == "POST":
         username = request.POST["username"]
@@ -40,34 +43,40 @@ def login_user(request):
 
         user = authenticate(request, username=username, password=password)
 
-        if user:
+        if user is not None:
             login(request, user)
             return redirect("dashboard")
+        else:
+            return render(request, "portal/login.html", {"error": "Invalid credentials"})
 
     return render(request, "portal/login.html")
 
-
-
+@login_required
 def logout_user(request):
     logout(request)
     return redirect('login')
 
-
-def home(request):
-    jobs = Job.objects.all().order_by('-created_at')
-    return render(request, 'portal/home.html', {'jobs': jobs})
-
+from django.contrib.auth.decorators import login_required
 
 @login_required
 def dashboard(request):
-    profile, created = Profile.objects.get_or_create(user=request.user)
+    user = request.user
 
-    if profile.role == "employer":
-        jobs = Job.objects.filter(employer=request.user)
-        return render(request, 'portal/dashboard.html', {'jobs': jobs})
+    if user.profile.role == "employer":
+        jobs = Job.objects.filter(employer=user)
+        applied_jobs = {}
     else:
-        return render(request, 'portal/dashboard.html')
+        jobs = Job.objects.all()
+        user_applications = Application.objects.filter(applicant=user)
+        applied_jobs = {app.job.id: app.status for app in user_applications}
 
+    print("ROLE:", user.profile.role)
+    print("APPLICATIONS:", applied_jobs)
+
+    return render(request, "portal/dashboard.html", {
+        "jobs": jobs,
+        "applied_jobs": applied_jobs,
+    })
 
 @login_required
 def post_job(request):
@@ -93,17 +102,29 @@ def job_detail(request, job_id):
 @login_required
 def apply_job(request, job_id):
     job = get_object_or_404(Job, id=job_id)
+
     if request.method == 'POST':
         form = ApplicationForm(request.POST, request.FILES)
+
         if form.is_valid():
             app = form.save(commit=False)
             app.job = job
             app.applicant = request.user
             app.save()
+            print("APPLICATION SAVED ✅")
             return redirect('dashboard')
+        else:
+            print("FORM ERRORS ❌:", form.errors)  
+
     else:
         form = ApplicationForm()
-    return render(request, 'portal/apply_job.html', {'form': form})
+
+    return render(request, 'portal/apply_job.html', {
+        'form': form,
+        'job': job
+    })
+
+
 
 @login_required
 def view_applicants(request, job_id):
@@ -111,7 +132,7 @@ def view_applicants(request, job_id):
 
     applicants = job.application_set.all()   # all applications
 
-    return render(request, 'portal/applicants.html', {
+    return render(request, "portal/applicants.html",{
         'job': job,
         'applicants': applicants
     })

@@ -1,15 +1,16 @@
 {% extends "portal/base.html" %}
 {% load static %}
-
+{% load portal_tags %}
 {% block content %}
 
 <div class="dashboard-wrapper">
 
     <div class="dashboard-card">
-
-        <div class="dashboard-header">
+        <center>
             <h2>Dashboard</h2>
-
+        </center>
+        <div class="dashboard-header">
+        
             {% if user.profile.role == "employer" %}
                 <a href="{% url 'post_job' %}" class="btn-primary">+ Post Job</a>
             {% endif %}
@@ -19,24 +20,33 @@
         <div class="dashboard-grid">
 
             {% for job in jobs %}
-                <div class="dashboard-job-card">
+    <div class="dashboard-job-card">
+        <h3>{{ job.title }}</h3>
+        <p class="company">{{ job.company }}</p>
+        <p class="location">{{ job.location }}</p>
 
-                    <h3>{{ job.title }}</h3>
-                    <p class="company">{{ job.company }}</p>
-                    <p class="location">{{ job.location }}</p>
+        <div class="job-actions">
+            <a href="{% url 'job_detail' job.id %}" class="btn-small">View</a>
 
-                    <div class="job-actions">
-                        <a href="{% url 'job_detail' job.id %}" class="btn-small">View</a>
+            {% if user.profile.role == "employer" %}
+                <a href="{% url 'view_applicants' job.id %}" class="btn-small btn-secondary">
+                   Applicants
+                </a>
+            {% elif user.profile.role == "seeker" %}
 
-                        {% if user.profile.role == "employer" %}
-                            <a href="{% url 'view_applicants' job.id %}" class="btn-small btn-secondary">
-                                Applicants
-                            </a>
-                        {% endif %}
-                    </div>
+                {% if job.id in applied_jobs %}
+                <span class="status">
+                     Status: {{ applied_jobs|get_item:job.id|capfirst }}
+                </span>
+                {% else %}
+               <a href="{% url 'apply_job' job.id %}" class="btn-small btn-primary">Apply</a>
+                {% endif %}
 
-                </div>
-            {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}
+
 
         </div>
         {% else %}
